@@ -8,11 +8,18 @@
       margin: 0;
       font-family: Arial, sans-serif;
     }
+
+    .widget-wrapper {
+      max-width: 500px;   /* 👈 Controls vertical layout */
+      margin: 0 auto;     /* Centers it */
+    }
   </style>
 </head>
 <body>
 
-<div id="gc-schedule-widget-glfy"></div>
+<div class="widget-wrapper">
+  <div id="gc-schedule-widget-glfy"></div>
+</div>
 
 <script>
   window.GC.team.schedule.init({
