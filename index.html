@@ -4,16 +4,24 @@ async function loadSchedule() {
   const games = await res.json();
 
   const now = new Date();
+  console.log("NOW:", now);
+
+  const container = document.getElementById("schedule");
+  container.innerHTML = "";
+
+  games.forEach(game => {
+    const start = new Date(game.start_ts);
+    console.log("GAME:", game.opponent_team?.name, start);
+  });
 
   const upcoming = games
     .filter(game => {
       const start = new Date(game.start_ts);
-      return start > now; // Only future games
+      return start.getTime() > now.getTime();
     })
     .sort((a, b) => new Date(a.start_ts) - new Date(b.start_ts));
 
-  const container = document.getElementById("schedule");
-  container.innerHTML = "";
+  console.log("UPCOMING COUNT:", upcoming.length);
 
   if (upcoming.length === 0) {
     container.innerHTML = "<p>No upcoming games scheduled.</p>";
