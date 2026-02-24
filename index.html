@@ -1,56 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <script src="https://widgets.gc.com/static/js/sdk.v1.js"></script>
+<meta charset="utf-8">
+<title>Upcoming Games</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+.container {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-    .widget-wrapper {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+h2 {
+  margin-bottom: 20px;
+}
 
-    /* 🔥 FORCE STACK OVERRIDE */
+.game-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #fff;
+}
 
-    /* Target flex containers and force vertical */
-    [class*="schedule"] {
-      display: block !important;
-      flex-direction: column !important;
-    }
+.date {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
 
-    /* Target individual game cards */
-    [class*="card"],
-    [class*="item"],
-    [class*="game"] {
-      width: 100% !important;
-      max-width: 100% !important;
-      margin-bottom: 16px !important;
-    }
+.opponent {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
 
-    /* Kill horizontal scrolling */
-    [style*="overflow-x"],
-    [class*="scroll"] {
-      overflow-x: hidden !important;
-    }
-
-  </style>
+.meta {
+  color: #666;
+  font-size: 14px;
+}
+</style>
 </head>
 <body>
 
-<div class="widget-wrapper">
-  <div id="gc-schedule-widget"></div>
+<div class="container">
+  <h2>Upcoming Games</h2>
+  <div id="schedule"></div>
 </div>
 
 <script>
-  window.GC.team.schedule.init({
-    target: "#gc-schedule-widget",
-    widgetId: "76862f59-263f-434e-b9af-1fd479808ec6"
+async function loadSchedule() {
+  const res = await fetch("https://api.team-manager.gc.com/public/teams/eB5S7ivDuLom/games");
+  const games = await res.json();
+
+  const now = new Date();
+
+  const upcoming = games
+    .filter(game => new Date(game.start_time) > now)
+    .sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+
+  const container = document.getElementById("schedule");
+  container.innerHTML = "";
+
+  if (upcoming.length === 0) {
+    container.innerHTML = "<p>No upcoming games scheduled.</p>";
+    return;
+  }
+
+  upcoming.forEach(game => {
+    const date = new Date(game.start_time);
+
+    const card = document.createElement("div");
+    card.className = "game-card";
+
+    card.innerHTML = `
+      <div class="date">
+        ${date.toLocaleDateString()} – ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+      </div>
+      <div class="opponent">
+        ${game.opponent_name || "Opponent TBD"}
+      </div>
+      <div class="meta">
+        ${game.location_name || ""}
+      </div>
+    `;
+
+    container.appendChild(card);
   });
+}
+
+loadSchedule();
 </script>
 
 </body>
