@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <script src="https://widgets.gc.com/static/js/sdk.v1.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -10,21 +11,45 @@
     }
 
     .widget-wrapper {
-      max-width: 500px;   /* 👈 Controls vertical layout */
-      margin: 0 auto;     /* Centers it */
+      max-width: 900px;
+      margin: 0 auto;
     }
+
+    /* 🔥 FORCE STACK OVERRIDE */
+
+    /* Target flex containers and force vertical */
+    [class*="schedule"] {
+      display: block !important;
+      flex-direction: column !important;
+    }
+
+    /* Target individual game cards */
+    [class*="card"],
+    [class*="item"],
+    [class*="game"] {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-bottom: 16px !important;
+    }
+
+    /* Kill horizontal scrolling */
+    [style*="overflow-x"],
+    [class*="scroll"] {
+      overflow-x: hidden !important;
+    }
+
   </style>
 </head>
 <body>
 
 <div class="widget-wrapper">
-  <div id="gc-schedule-widget-glfy"></div>
+  <div id="gc-schedule-widget"></div>
 </div>
 
 <script>
   window.GC.team.schedule.init({
     target: "#gc-schedule-widget",
-    widgetId: "76862f59-263f-434e-b9af-1fd479808ec6",
+    widgetId: "76862f59-263f-434e-b9af-1fd479808ec6"
   });
 </script>
 
